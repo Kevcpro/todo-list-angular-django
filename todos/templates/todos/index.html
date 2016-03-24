@@ -1,0 +1,78 @@
+<!-- index.html
+Date: 2016-03-02
+Description: http client
+Structure:
+  div>(ipnut+button+p)+(ul>div>(input*2+button*2))*2+textarea*2
+Notes:
+  show response in p tag
+-->
+
+<!DOCTYPE html>
+<!-- ng-app for app.js-->
+<html lang="en" ng-app="app">
+  <head>
+      <title>ToDo App Client</title>
+      <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+      {% load staticfiles %}  <!-- Dj -->
+      <script type="text/javascript" src="{% static 'todos/app.js' %}"></script>
+      <meta charset="UTF-8">
+  </head>
+
+  {% verbatim %}  <!-- Dj escape rendering directive-->
+
+  <body>
+
+    <div ng-controller="todoController" ng-init="init()">
+
+        <input type="text" ng-model="newTaskName" placeholder="enter task here!">
+        <button ng-click="onClickAddTask(newTaskName)"> Add Task </button>
+
+        <p>Undone tasks</p>
+        <ul>
+            <li ng-repeat="t in tasksUndone">
+                <input id="{{t.task_id}}" type="checkbox" ng-model="t.status" ng-change="onClickUpdateTask(t.task_id, t)" checked="{[t.status]}">
+                <!-- NOTE: checkbox with ng-change
+                require create a ng-model alongside with ng-change
+                ng-change expression is only evaluated when a change in the input value causes a new value to be committed to the model.
+                when click, t.status is changed, triggering ng-change
+                -->
+                <input type="text" value="{{t.task}}" ng-model="t.task">
+                <!--NOTE: ng.model should same as value: t.task-->
+
+                <button ng-click="onClickUpdateTask(t.task_id, t)"> Rename </button>
+                <button ng-click="onClickDeleteTask(t.task_id)"> Delete </button>
+            </li>
+        </ul>
+
+        <p>Done tasks</p>
+        <ul>
+            <li ng-repeat="t in tasksDone">
+                <!-- deprecated
+                <input id="{{t.task_id}}" type="checkbox" ng-model="t.status" ng-change="onClickUpdateTask(t.task_id, t.status)" ng-checked="t.status">
+                NOTE: checkbox with ng-checked with update function
+                    You need double click to make uncheck work
+                    DO NOT use ng-model and ng-change in the same time
+                    solution: use ng-change with update function, bind ng-model with t.status
+                -->
+                <input id="{{t.task_id}}" type="checkbox" ng-model="t.status" ng-change="onClickUpdateTask(t.task_id, t)" checked="{{t.status}}">
+                <input type="text" value="{{t.task}}" ng-model="t.task">
+                <button ng-click="onClickUpdateTask(t.task_id, t)"> Rename </button>
+                <!-- deprecated
+                <button ng-click="onClickUpdateTask(t.task_id, !t.status)"> Done </button>
+                -->
+                <button ng-click="onClickDeleteTask(t.task_id)"> Delete </button>
+            </li>
+        </ul>
+
+        <hr>
+        <!--
+        <textarea rows="30" cols="50" readonly>{{getRespTxt}}</textarea>
+        <textarea rows="6" cols="50" readonly>{{respTxt}}</textarea>
+        -->
+    </div>
+
+  </body>
+
+  {% endverbatim %}  <!-- Dj End of escape rendering directive-->
+
+</html>

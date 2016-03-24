@@ -1,0 +1,130 @@
+<!--
+    display todo task
+    use form to send POST method
+    NOT support angJS
+-->
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript"
+    src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script>
+    //
+    //    - - - - - - -  ajax call
+    //
+    function ajaxCall(url, cfunc) {
+        // callback pattern for ajax
+        var xhttp;
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (xhttp.readyState == 4 && xhttp.status == 200) {
+              cfunc(xhttp);
+            }
+        };
+        xhttp.open("GET", url, true);
+        xhttp.send();
+    }
+
+    function insertTask(xhttp){
+        // parse xhttp.responseText
+        //[{"fields": {"task": "my task", "pub_date": "2016-02-26T07:53:10.785Z"}, "model": "polls.todo", "pk": 34}]
+        var respJson = JSON.parse(xhttp.responseText);  //
+        _new_task_name = respJson[0].fields.task;
+        $('ul').prepend('<li>' + _new_task_name + '</li>');
+    }
+
+    // deprecated
+    function insertTaskAjax() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (xhttp.readyState == 4 && xhttp.status == 200) {
+                $('ul').prepend('<li>' + xhttp.responseText + '</li>')
+            }
+        };
+        xhttp.open("GET", "{% url 'polls:get_latest_task' %}", true);
+        // open(method, url, async) 	Specifies the type of request
+        // method: the type of request: GET or POST
+        // url: the server (file) location
+        // async: true (asynchronous) or false (synchronous)
+        xhttp.send();
+        // send() 	Sends the request to the server (used for GET)
+        // send(string) 	Sends the request to the server (used for POST)
+    }
+
+    function post(path, params, method) {
+        // make a post request like form submit
+        // http://stackoverflow.com/questions/133925/javascript-post-request-like-a-form-submit
+        method = method || "post"; // Set method to post by default if not specified.
+        // The rest of this code assumes you are not using a library.
+        // It can be made less wordy if you use one.
+        // NOTE 3 : refactor using jQ
+        var form = document.createElement("form");
+        form.setAttribute("method", method);
+        form.setAttribute("action", path);
+
+        for(var key in params) {
+            if(params.hasOwnProperty(key)) {
+                var hiddenField = document.createElement("input");
+                //<input type="hidden" name="task" value="...">
+                hiddenField.setAttribute("type", "hidden");
+                hiddenField.setAttribute("name", key);
+                hiddenField.setAttribute("value", params[key]);
+                form.appendChild(hiddenField);
+             }
+        }
+        document.body.appendChild(form);
+        form.submit();
+        // TODO 2: return post resp status
+    }
+
+    //
+    //   - - - - - - - jQ - - - - -
+    //
+    $(document).ready(function(){
+        $("#button2").click(function(){
+            task_name = $("#input2").val();
+            //post('/polls/all_tasks/new', {task: 'Johnny Bravo'});
+            post('/polls/all_tasks/new', {task: task_name});
+            // NOTE: issue: if post is failed
+            // TODO 2: if 201, make ajaxCall to insertTask,
+            //    1. no redireting
+            //    2. ajaxCall("{% url 'polls:get_latest_task' %}", insertTask)
+            //ajaxCall("{% url 'polls:get_latest_task' %}", insertTask)
+        });
+        $("#button3").click(function(){
+            // insertTask is a callback
+            //ajaxCall('http://127.0.0.1:8000/todos/all/latest/html/', insertTask);
+            ajaxCall("{% url 'todos:get_latest_task' %}", insertTask);
+            //insertTaskAjax();
+        });
+    });
+    </script>
+</head>
+<body>
+    <!--OLD POST request with form button-->
+    <p>demo 1. make POST with form button</p>
+    <form action="{% url 'polls:new_task' %}" method="POST">
+        <input type="text" name="task">
+        <input id ="button1" type="submit" value="Send POST" class="btn btn-primary">
+    </form>
+
+    <p>demo 2. make POST with button + js code</p>
+    <input id="input2" type="text">
+    <button id="button2" type="button" >send POST by JS</button>
+    <p id="result2"></p>
+
+    <p>demo 3. use button to insert latest task via ajax</p>
+    <button id="button3" type="button" onclick="submit()">Insert latest task</button>
+    {% if tasks %}
+        <ul>
+        {% for task in tasks %}
+            <li>{{ task.task }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No polls are available.</p>
+    {% endif %}
+    <p>{% url 'todos:get_latest_task' %}</p>
+
+</body>
+</html>
