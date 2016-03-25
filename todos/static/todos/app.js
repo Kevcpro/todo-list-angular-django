@@ -1,4 +1,4 @@
-var app = angular.module("app", ['ngAnimate', 'ui.bootstrap']);
+var app = angular.module("app", ['modalController', 'ngAnimate', 'ui.bootstrap']);
 //create a module with no other dependencies(empty list)
 // name of module is myApp, will be registered in html
 
@@ -8,14 +8,11 @@ app.controller("todoController", function($scope, $http, $uibModal, $log){  // a
     // tasks groups ng model
     $scope.tasksDone = [];
     $scope.tasksUndone = [];
-    //response data model
-    //$scope.getRespTxt = '';
-    //$scope.respTxt = '';
     $scope.alerts = []; // alert message
 
     $scope.addAlert = function(text) {
         $scope.alerts.splice(0, 0, {msg: text}); // insert
-        // splice(pos, removedNums, [elements, ])
+        // array.splice(pos, removedNums, [elements, ])
     };
     $scope.closeAlert = function(index) {
         $scope.alerts.splice(index, 1); // remove one
@@ -32,16 +29,11 @@ app.controller("todoController", function($scope, $http, $uibModal, $log){  // a
                 if (response.status === 201){
                     _sendGetUpdateAngModel();
                     $scope.newTaskName = '';                   // clear input
-                    $scope.respTxt = response.data;
-                    // NOTE: cannot clear $scope.getRespTxt here
-                    $scope.getRespTxt = '';  // invalid
-                    console.log($scope.getRespTxt);
                     $scope.addAlert(response.data.result);
                 }
             }, function(response){
                 // handle task limit condition
                 if (response.status === 403){
-                    $scope.respTxt = response.data;
                     alert('reach 30 tasks limit');
                 }
                 console.log('errorPOST');
@@ -70,7 +62,6 @@ app.controller("todoController", function($scope, $http, $uibModal, $log){  // a
 
         $http.get(url).then(
             function(response){
-                $scope.getRespTxt = response.data.data;  // type object
                 _updateTaskAngModel(response);
                 console.log('successGET');
             }, function(response){
@@ -100,7 +91,6 @@ app.controller("todoController", function($scope, $http, $uibModal, $log){  // a
                 console.log('successPUT');
                 if (response.status === 200){
                     _sendGetUpdateAngModel();
-                    $scope.respTxt = response.data;
                     $scope.addAlert(response.data.result);
                 }
             }, function(response){
@@ -119,8 +109,8 @@ app.controller("todoController", function($scope, $http, $uibModal, $log){  // a
             templateUrl: 'my_modal_id',
             controller: 'ModalInstanceCtrl',
             size: 'lg',
-            resolve: {  // Members that will be resolved and passed to the modal controller as locals
-                name: function () {
+            resolve: {  // Members that will be resolved and passed to the modal-controller as locals
+                name: function () { // NOTE: name should be consistent with argument in modal-controller
                     return taskName;
                 }
             }
@@ -137,7 +127,6 @@ app.controller("todoController", function($scope, $http, $uibModal, $log){  // a
                     console.log('successDELETE');
                     if (response.status === 200){
                         _sendGetUpdateAngModel();
-                        $scope.respTxt = response.data;
                         $scope.addAlert(response.data.result + ' : ' + taskName );
                     }
                 }, function(response){
@@ -157,15 +146,4 @@ app.controller("todoController", function($scope, $http, $uibModal, $log){  // a
         _sendGetUpdateAngModel();
     };
 
-});
-
-app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, name) {
-    // define display of modal content and return value
-    $scope.DeleteTaskName = name;
-    $scope.ok = function () {
-        $uibModalInstance.close(true);// NOTE pass to modalResult
-    };
-    $scope.cancel = function () {
-        $uibModalInstance.dismiss(false);// NOTE pass to modalResultReject
-    };
 });

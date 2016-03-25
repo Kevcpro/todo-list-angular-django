@@ -18,6 +18,7 @@ Notes:
       <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
       {% load staticfiles %}  <!-- Dj -->
       <script type="text/javascript" src="{% static 'todos/app.js' %}"></script>
+      <script type="text/javascript" src="{% static 'todos/modal-controller.js' %}"></script>
       <meta charset="UTF-8">
   </head>
 
@@ -28,7 +29,7 @@ Notes:
     <div class="col-sm-4"></div>
     <div class="col-sm-4" ng-controller="todoController" ng-init="init()" >
 
-        <!--Modal Template-->
+        <!-- NOTE Modal Template-->
         <script type="text/ng-template" id="my_modal_id">
         <div class="modal-header">
             <h3 class="modal-title">Are you sure?</h3>
@@ -90,10 +91,6 @@ Notes:
         </ul>
 
         <hr>
-        <!--
-        <textarea rows="30" cols="50" readonly>{{getRespTxt}}</textarea>
-        <textarea rows="6" cols="50" readonly>{{respTxt}}</textarea>
-        -->
     </div> <!-- End of controller-->
 
     <div class="col-sm-4"></div>
