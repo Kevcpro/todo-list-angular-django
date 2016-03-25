@@ -34,7 +34,7 @@ def get_all_or_create_new_task(request):
     """display all todo tasks in json, or create a new task."""
 
     if request.method == 'GET':
-        all_tasks_query_set = ToDo.objects.all()
+        all_tasks_query_set = ToDo.objects.all().order_by('-pub_date')
         # type: <class 'django.db.models.query.QuerySet'>
         serial_tasks = serializers.serialize('json', all_tasks_query_set)
         # typeof(serial_tasks): unicode
