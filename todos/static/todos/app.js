@@ -1,9 +1,9 @@
-var app = angular.module("app", []);
+var app = angular.module("app", ['ngAnimate', 'ui.bootstrap']);
 //create a module with no other dependencies(empty list)
 // name of module is myApp, will be registered in html
 
 // define controller: how data is processed from model to view
-app.controller("todoController", function($scope, $http){  // attribute must name as $scope
+app.controller("todoController", function($scope, $http, $uibModal, $log){  // attribute must name as $scope
 
     // tasks groups ng model
     $scope.tasksDone = [];
@@ -11,6 +11,15 @@ app.controller("todoController", function($scope, $http){  // attribute must nam
     //response data model
     //$scope.getRespTxt = '';
     //$scope.respTxt = '';
+    $scope.alerts = []; // alert message
+
+    $scope.addAlert = function(text) {
+        $scope.alerts.splice(0, 0, {msg: text}); // insert
+        // splice(pos, removedNums, [elements, ])
+    };
+    $scope.closeAlert = function(index) {
+        $scope.alerts.splice(index, 1); // remove one
+    };
 
     $scope.onClickAddTask = function(taskName){
         // prepare request url and data
@@ -27,7 +36,7 @@ app.controller("todoController", function($scope, $http){  // attribute must nam
                     // NOTE: cannot clear $scope.getRespTxt here
                     $scope.getRespTxt = '';  // invalid
                     console.log($scope.getRespTxt);
-                    //
+                    $scope.addAlert(response.data.result);
                 }
             }, function(response){
                 // handle task limit condition
@@ -80,10 +89,10 @@ app.controller("todoController", function($scope, $http){  // attribute must nam
         // parse request data
         var data = {};
         if(task.status !== 'undefined'){
-            data['status'] = task.status;
+            data.status = task.status;
         }
         if(task.task !== 'undefined'){
-            data['task'] = task.task;
+            data.task = task.task;
         }
 
         $http.put(url, data).then(
@@ -92,6 +101,7 @@ app.controller("todoController", function($scope, $http){  // attribute must nam
                 if (response.status === 200){
                     _sendGetUpdateAngModel();
                     $scope.respTxt = response.data;
+                    $scope.addAlert(response.data.result);
                 }
             }, function(response){
                 console.log('errorPUT');
@@ -99,20 +109,47 @@ app.controller("todoController", function($scope, $http){  // attribute must nam
             });
     };
 
-    $scope.onClickDeleteTask = function(taskID){
+    $scope.onClickDeleteTask = function(taskID, taskName){
         console.info('task ', taskID, ' is gonna be deleted');
         var url = '/todos/' + taskID + '/';
 
-        $http.delete(url).then(
-            function(response){
-                console.log('successDELETE');
-                if (response.status === 200){
-                    _sendGetUpdateAngModel();
-                    $scope.respTxt = response.data;
+        // confirm modal
+        var modalInstance = $uibModal.open({
+            animation: true,
+            templateUrl: 'my_modal_id',
+            controller: 'ModalInstanceCtrl',
+            size: 'lg',
+            resolve: {  // Members that will be resolved and passed to the modal controller as locals
+                name: function () {
+                    return taskName;
                 }
-            }, function(response){
-                console.log('errorDELETE');
-            });
+            }
+        });
+
+        // NOTE callback
+        modalInstance.result.then(function (modalResult) {
+            // NOTE resolve function
+            $log.info('Modal confirmed at: ' + new Date() + ' ' + modalResult);
+
+            // NOTE OLD http delete call
+            $http.delete(url).then(
+                function(response){
+                    console.log('successDELETE');
+                    if (response.status === 200){
+                        _sendGetUpdateAngModel();
+                        $scope.respTxt = response.data;
+                        $scope.addAlert(response.data.result + ' : ' + taskName );
+                    }
+                }, function(response){
+                    console.log('errorDELETE');
+                });
+
+        }, function (modalResultReject) {
+            // NOTE reject function
+            $log.info('Modal dismissed at: ' + new Date() + ' ' + modalResultReject);
+            }
+        );
+
     };
 
     // execute when page is loaded
@@ -120,4 +157,15 @@ app.controller("todoController", function($scope, $http){  // attribute must nam
         _sendGetUpdateAngModel();
     };
 
+});
+
+app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, name) {
+    // define display of modal content and return value
+    $scope.DeleteTaskName = name;
+    $scope.ok = function () {
+        $uibModalInstance.close(true);// NOTE pass to modalResult
+    };
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss(false);// NOTE pass to modalResultReject
+    };
 });
