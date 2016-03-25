@@ -9,13 +9,12 @@ app.controller("todoController", function($scope, $http){  // attribute must nam
     $scope.tasksDone = [];
     $scope.tasksUndone = [];
     //response data model
-    $scope.getRespTxt = '';
-    $scope.respTxt = '';
+    //$scope.getRespTxt = '';
+    //$scope.respTxt = '';
 
     $scope.onClickAddTask = function(taskName){
         // prepare request url and data
         var url = '/todos/';
-        //var url = window.location.origin + '/todos/new/'; //redundant
         var data = {'task':taskName};
 
         $http.post(url, data).then(
@@ -58,8 +57,7 @@ app.controller("todoController", function($scope, $http){  // attribute must nam
 
     function _sendGetUpdateAngModel(url){
         // get current host and port
-        var default_url = window.location.origin + '/todos/';
-        url = typeof url !== 'undefined' ? url : default_url;
+        url = url || '/todos/';
 
         $http.get(url).then(
             function(response){
@@ -77,7 +75,7 @@ app.controller("todoController", function($scope, $http){  // attribute must nam
         console.info('task', taskID, ' is gonna update to name ', task.task);
 
         // prepare request url and data
-        var url = window.location.origin + '/todos/' + taskID + '/';
+        var url = '/todos/' + taskID + '/';
 
         // parse request data
         var data = {};
@@ -103,7 +101,7 @@ app.controller("todoController", function($scope, $http){  // attribute must nam
 
     $scope.onClickDeleteTask = function(taskID){
         console.info('task ', taskID, ' is gonna be deleted');
-        var url = window.location.origin + '/todos/' + taskID + '/';
+        var url = '/todos/' + taskID + '/';
 
         $http.delete(url).then(
             function(response){
