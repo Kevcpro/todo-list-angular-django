@@ -1,4 +1,5 @@
 *.pyc
+*.sqlite3
 # # 這是註解
 # [Oo]bj
 # [Bb]in
