@@ -2,9 +2,7 @@
 Date: 2016-03-02
 Description: http client
 Structure:
-  div>(ipnut+button+p)+(ul>div>(input*2+button*2))*2+textarea*2
 Notes:
-  show response in p tag
 -->
 
 <!DOCTYPE html>
@@ -42,7 +40,7 @@ Notes:
             <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
             <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
         </div>
-        </script>
+        </script> <!--End of Modal Template-->
 
         <h1>Make a To-Do!</h1>
 
@@ -54,71 +52,55 @@ Notes:
 
         <!--NOTE Todo-list Usage -->
         <div class="row" style="padding: 10px 0 0 0;">
-          <div class="col-sm-2"></div>
-          <div class="col-sm-8">
-        <uib-progressbar class="active" max="30" value="tasksUndone.length + tasksDone.length">
-            <i>{{ tasksUndone.length + tasksDone.length }} / 30</i>
-        </uib-progressbar>
-          </div>
-          <div class="col-sm-2"></div>
+            <div class="col-sm-2"></div>
+            <div class="col-sm-8">
+                <uib-progressbar class="active" max="30" value="tasksUndone.length + tasksDone.length">
+                    <i>{{ tasksUndone.length + tasksDone.length }} / 30</i>
+                </uib-progressbar>
+            </div>
+            <div class="col-sm-2"></div>
         </div>
 
         <!--NOTE flash message-->
         <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
 
         <div id="task-groups" class="row">
-        <div class="col-md-6">
+            <div class="col-md-6">
 
-        <h2>Undone tasks</h2>
-        <ul class="list-group">
-            <li class="list-group-item" ng-repeat="t in tasksUndone">
-                <input id="{{t.task_id}}" type="checkbox" ng-model="t.status" ng-change="onClickUpdateTask(t.task_id, t)" checked="{[t.status]}">
-                <!-- NOTE: checkbox with ng-change
-                require create a ng-model alongside with ng-change
-                ng-change expression is only evaluated when a change in the input value causes a new value to be committed to the model.
-                when click, t.status is changed, triggering ng-change
-                -->
-                <input type="text" value="{{t.task}}" ng-model="t.task">
-                <!--NOTE: ng.model should same as value: t.task-->
+                <h2>Undone tasks</h2>
+                <ul class="list-group">
+                    <li class="list-group-item" ng-repeat="t in tasksUndone">
+                        <input id="{{t.task_id}}" type="checkbox" ng-model="t.status" ng-change="onClickUpdateTask(t.task_id, t)" checked="{[t.status]}">
+                        <input type="text" value="{{t.task}}" ng-model="t.task">
+                        <!--NOTE: ng.model should same as value: t.task-->
 
-                <button type="button" class="btn btn-sm btn-primary" ng-click="onClickUpdateTask(t.task_id, t)">
-                    <span class="glyphicon glyphicon-pencil"></span> Rename
-                </button>
-                <button type="button" class="btn btn-sm btn-danger" ng-click="onClickDeleteTask(t.task_id, t.task)">
-                    <span class="glyphicon glyphicon-remove"></span> Delete
-                </button>
-            </li>
-        </ul>
-        </div>
+                        <button type="button" class="btn btn-sm btn-primary" ng-click="onClickUpdateTask(t.task_id, t)">
+                            <span class="glyphicon glyphicon-pencil"></span> Rename
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger" ng-click="onClickDeleteTask(t.task_id, t.task)">
+                            <span class="glyphicon glyphicon-remove"></span> Delete
+                        </button>
+                    </li>
+                </ul>
+            </div>
 
-        <div class="col-md-6">
+            <div class="col-md-6">
 
-        <h2>Done tasks</h2>
-        <ul class="list-group">
-            <li class="list-group-item" ng-repeat="t in tasksDone">
-                <!-- deprecated
-                <input id="{{t.task_id}}" type="checkbox" ng-model="t.status" ng-change="onClickUpdateTask(t.task_id, t.status)" ng-checked="t.status">
-                NOTE: checkbox with ng-checked with update function
-                    You need double click to make uncheck work
-                    DO NOT use ng-model and ng-change in the same time
-                    solution: use ng-change with update function, bind ng-model with t.status
-                -->
-                <input id="{{t.task_id}}" type="checkbox" ng-model="t.status" ng-change="onClickUpdateTask(t.task_id, t)" checked="{{t.status}}">
-                <input type="text" value="{{t.task}}" ng-model="t.task">
-                <button type="button" class="btn btn-sm btn-primary" ng-click="onClickUpdateTask(t.task_id, t)">
-                    <span class="glyphicon glyphicon-pencil"></span> Rename
-                </button>
-                <!-- deprecated
-                <button ng-click="onClickUpdateTask(t.task_id, !t.status)"> Done </button>
-                -->
-                <button type="button" class="btn btn-sm btn-danger" ng-click="onClickDeleteTask(t.task_id, t.task)">
-                    <span class="glyphicon glyphicon-remove"></span> Delete
-                </button>
-            </li>
-        </ul>
-        </div>
-
-    </div><!--End of task-groups-->
+                <h2>Done tasks</h2>
+                <ul class="list-group">
+                    <li class="list-group-item" ng-repeat="t in tasksDone">
+                        <input id="{{t.task_id}}" type="checkbox" ng-model="t.status" ng-change="onClickUpdateTask(t.task_id, t)" checked="{{t.status}}">
+                        <input type="text" value="{{t.task}}" ng-model="t.task">
+                        <button type="button" class="btn btn-sm btn-primary" ng-click="onClickUpdateTask(t.task_id, t)">
+                            <span class="glyphicon glyphicon-pencil"></span> Rename
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger" ng-click="onClickDeleteTask(t.task_id, t.task)">
+                            <span class="glyphicon glyphicon-remove"></span> Delete
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div><!--End of task-groups-->
 
     </div> <!-- End of controller-->
 

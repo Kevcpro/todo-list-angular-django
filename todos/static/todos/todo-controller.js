@@ -1,6 +1,8 @@
 angular
     .module("todoController", ['modalController', 'ngAnimate', 'ui.bootstrap'])
+    //NOTE module name can be same as controller name
     .controller("todoController", function($scope, $http, $uibModal, $log){  // attribute must name as $scope
+    // NOTE $uibModal dependencies
 
     // tasks groups ng model
     $scope.tasksDone = [];
