@@ -9,9 +9,10 @@ angular
     $scope.tasksUndone = [];
     $scope.alerts = []; // alert message
 
+    // NOTE usage progress bar
     $scope.addAlert = function(text) {
         $scope.alerts.splice(0, 0, {msg: text}); // insert
-        // array.splice(pos, removedNums, [elements, ])
+        // array.splice(pos, numToRemove, [elements, ])
     };
     $scope.closeAlert = function(index) {
         $scope.alerts.splice(index, 1); // remove one
@@ -117,8 +118,8 @@ angular
 
         // NOTE callback
         modalInstance.result.then(function (modalResult) {
-            // NOTE resolve function
-            $log.info('Modal confirmed at: ' + new Date() + ' ' + modalResult);
+            // NOTE resolve function, modalResult passed from modal-controller
+            $log.info('[Modal] ' + new Date() + ': ' + modalResult);
 
             // NOTE OLD http delete call
             $http.delete(url).then(
@@ -133,8 +134,8 @@ angular
                 });
 
         }, function (modalResultReject) {
-            // NOTE reject function
-            $log.info('Modal dismissed at: ' + new Date() + ' ' + modalResultReject);
+            // NOTE reject function, modalResultReject passed from modal-controller
+            $log.info('[Modal] ' + new Date() + ': ' + modalResultReject);
             }
         );
 
