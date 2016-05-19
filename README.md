@@ -12,4 +12,5 @@ modified from [Django tutorial 1.7](https://docs.djangoproject.com/en/1.7/intro/
 
 ## Run
 
-`$ python manage.py runserver http://localhost:8888`
+* `$ cp db.sqlite3.example db.sqlite3  # copy example db file`
+* `$ python manage.py runserver http://localhost:8888`
