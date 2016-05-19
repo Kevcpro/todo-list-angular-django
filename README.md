@@ -12,4 +12,4 @@ modified from [Django tutorial 1.7](https://docs.djangoproject.com/en/1.7/intro/
 
 ## Run
 
-`$ python manage.py runserver`
+`$ python manage.py runserver http://localhost:8888`
