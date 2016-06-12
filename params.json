@@ -1,0 +1,6 @@
+{
+  "name": "Todo-list-angular-django",
+  "tagline": "",
+  "body": "# todo-list-angular-django\r\nto-do-list app powered by AngularJS, Django, and Angular-ui\r\n\r\nmodified from [Django tutorial 1.7](https://docs.djangoproject.com/en/1.7/intro/tutorial01/)\r\n\r\n\r\n## Environment\r\n\r\n* Ubuntu 14, x64\r\n* Django 1.7 (Currently latest: 1.9)\r\n* Angular 1.5.0\r\n\r\n## Run\r\n\r\n* `$ cp db.sqlite3.example db.sqlite3  # copy example db file`\r\n* `$ python manage.py runserver http://localhost:8888`",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
